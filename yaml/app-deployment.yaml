@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citizen-rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: citizen-rest
+  template:
+    metadata:
+      labels:
+        app: citizen-rest
+    spec:
+      containers:
+      - name: citizen-rest
+        image: citizen-rest:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: "mysql"
+        - name: DB_NAME
+          value: "citizenregistry"
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: user-secret
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: user-secret
+              key: password
